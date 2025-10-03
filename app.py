@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+import uvicorn
 from pydantic import BaseModel
 from src.helper import load_pdf_file, filter_minimal_docs, text_split, download_embeddings
 from store_index import build_or_load_faiss_index
@@ -51,4 +52,8 @@ async def chat(req: ChatRequest):
     # Answer with Groq LLM
     response = llm.invoke(f"Context: {context}\n\nQuestion: {req.query}")
     return {"answer": response.content}
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))  # Render provides PORT env variable
+    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=True)
 
