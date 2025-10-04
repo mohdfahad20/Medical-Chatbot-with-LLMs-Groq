@@ -10,11 +10,11 @@ pinned: false
 license: mit
 ---
 
-# 🏥 Medical Chatbot
+# 🏥 Medical Chatbot Using LLM
 
 An AI-powered medical assistant that answers questions based on medical documents using semantic search and large language models.
 
-[![Hugging Face Spaces](https://img.shields.io/badge/🤗%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/YOUR_USERNAME/medical-chatbot)
+[![Hugging Face Spaces](https://img.shields.io/badge/🤗%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/VeNoM21/medical-chatbot)
 
 ---
 
@@ -43,13 +43,13 @@ An AI-powered medical assistant that answers questions based on medical document
 
 ### Option 1: Use Online (Recommended)
 
-Visit the live demo: [Hugging Face Space](https://huggingface.co/spaces/YOUR_USERNAME/medical-chatbot)
+Visit the live demo: [Hugging Face Space](https://huggingface.co/spaces/VeNoM21/medical-chatbot)
 
 ### Option 2: Run Locally
 
 ```bash
 # Clone the repository
-git clone https://huggingface.co/spaces/YOUR_USERNAME/medical-chatbot
+git clone https://huggingface.co/spaces/VeNoM21/medical-chatbot
 cd medical-chatbot
 
 # Create virtual environment
