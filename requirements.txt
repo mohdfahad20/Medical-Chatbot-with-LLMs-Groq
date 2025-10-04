@@ -1,10 +1,23 @@
-ipykernel
-langchain-groq
-langchain==0.3.26
-sentence-transformers==4.1.0
-pypdf==5.6.1
-python-dotenv==1.1.0
-langchain-community==0.3.26
+# Core FastAPI
 fastapi==0.115.0
 uvicorn[standard]==0.32.0
+python-multipart
+jinja2
+
+# LangChain and AI
+langchain==0.3.26
+langchain-community==0.3.26
+langchain-groq
+
+# Embeddings and Vector Store
+sentence-transformers==4.1.0
 faiss-cpu
+
+# PDF Processing
+pypdf==5.6.1
+
+# Environment Variables
+python-dotenv==1.1.0
+
+# Optional but recommended for production
+gunicorn

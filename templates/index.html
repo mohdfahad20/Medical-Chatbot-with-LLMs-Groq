@@ -17,11 +17,11 @@
                     <div class="d-flex bd-highlight">
                         <div class="img_cont">
                             <img src="https://cdn-icons-png.flaticon.com/512/387/387569.png" class="rounded-circle user_img">
-                            <span class="online_icon"></span>
+                            <span class="online_icon" id="status-indicator"></span>
                         </div>
                         <div class="user_info">
                             <span>Medical Chatbot</span>
-                            <p>Ask me anything!</p>
+                            <p id="status-text">Checking status...</p>
                         </div>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                     <form id="messageArea" class="input-group">
                         <input type="text" id="user-input" name="msg" placeholder="Type your message..." autocomplete="off" class="form-control type_msg" required/>
                         <div class="input-group-append">
-                            <button type="submit" class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></button>
+                            <button type="submit" id="send-btn" class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></button>
                         </div>
                     </form>
                 </div>
@@ -45,7 +45,82 @@
 </div>
 
 <script>
+let isInitializing = true;
+let pendingQuery = null;
+
+// Check health status on load
+function checkHealth() {
+    $.ajax({
+        url: "/health",
+        type: "GET",
+    }).done(function(data) {
+        if (data.models_ready) {
+            $("#status-text").text("Ask me anything!");
+            $("#status-indicator").css("background-color", "#4cd137");
+            isInitializing = false;
+            
+            // If there was a pending query, send it now
+            if (pendingQuery) {
+                sendQuery(pendingQuery.userText, pendingQuery.str_time);
+                pendingQuery = null;
+            }
+        } else if (data.initializing) {
+            $("#status-text").text("Loading AI models...");
+            $("#status-indicator").css("background-color", "#ffa502");
+            setTimeout(checkHealth, 5000); // Check again in 5s
+        }
+    }).fail(function() {
+        $("#status-text").text("Connection error");
+        $("#status-indicator").css("background-color", "#ff6b6b");
+        setTimeout(checkHealth, 10000); // Retry in 10s
+    });
+}
+
+// Send query to backend
+function sendQuery(userText, str_time) {
+    $.ajax({
+        url: "/chat",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ query: userText }),
+    }).done(function(data) {
+        let botMessage = data.answer;
+        let messageClass = "msg_cotainer";
+        
+        // Handle different statuses
+        if (data.status === "initializing") {
+            messageClass += " text-warning";
+            isInitializing = true;
+            // Store query to retry later
+            pendingQuery = { userText, str_time };
+            // Check health again
+            setTimeout(checkHealth, 5000);
+        } else if (data.status === "error") {
+            messageClass += " text-danger";
+        }
+        
+        const botHtml = `
+        <div class="d-flex justify-content-start mb-4">
+            <div class="img_cont_msg"><img src="https://cdn-icons-png.flaticon.com/512/387/387569.png" class="rounded-circle user_img_msg"></div>
+            <div class="${messageClass}">${botMessage}<span class="msg_time">${str_time}</span></div>
+        </div>`;
+        $("#chat-box").append(botHtml);
+        $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+    }).fail(function() {
+        const errorHtml = `
+        <div class="d-flex justify-content-start mb-4">
+            <div class="img_cont_msg"><img src="https://cdn-icons-png.flaticon.com/512/387/387569.png" class="rounded-circle user_img_msg"></div>
+            <div class="msg_cotainer text-danger">Connection error. Please try again.<span class="msg_time">${str_time}</span></div>
+        </div>`;
+        $("#chat-box").append(errorHtml);
+        $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+    });
+}
+
 $(document).ready(function() {
+    // Check health on page load
+    checkHealth();
+    
     $("#messageArea").on("submit", function(event) {
         event.preventDefault();
         const date = new Date();
@@ -62,22 +137,10 @@ $(document).ready(function() {
         </div>`;
         $("#chat-box").append(userHtml);
         $("#user-input").val("");
+        $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
 
-        // Send to FastAPI
-        $.ajax({
-            url: "/chat",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ query: userText }),
-        }).done(function(data) {
-            const botHtml = `
-            <div class="d-flex justify-content-start mb-4">
-                <div class="img_cont_msg"><img src="https://cdn-icons-png.flaticon.com/512/387/387569.png" class="rounded-circle user_img_msg"></div>
-                <div class="msg_cotainer">${data.answer}<span class="msg_time">${str_time}</span></div>
-            </div>`;
-            $("#chat-box").append(botHtml);
-            $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
-        });
+        // Send query
+        sendQuery(userText, str_time);
     });
 });
 </script>
