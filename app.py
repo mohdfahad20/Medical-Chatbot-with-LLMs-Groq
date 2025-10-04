@@ -1,8 +1,7 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import uvicorn
 from pydantic import BaseModel
 from src.helper import load_pdf_file, filter_minimal_docs, text_split, download_embeddings
 from store_index import build_or_load_faiss_index
@@ -18,20 +17,11 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# ---------------- EMBEDDINGS + INDEX ---------------- #
-embeddings = download_embeddings()
+# ---------------- GLOBALS (lazy init) ---------------- #
+embeddings = None
+docsearch = None
+llm = None
 
-extracted_data = load_pdf_file("data/")
-filtered_data = filter_minimal_docs(extracted_data)
-text_chunks = text_split(filtered_data)
-
-docsearch = build_or_load_faiss_index(text_chunks, embeddings)
-
-# ---------------- LLM ---------------- #
-llm = ChatGroq(
-    model="llama-3.1-8b-instant",
-    api_key=os.getenv("GROQ_API_KEY")
-)
 
 # ---------------- ROUTES ---------------- #
 @app.get("/", response_class=HTMLResponse)
@@ -43,8 +33,26 @@ async def home(request: Request):
 class ChatRequest(BaseModel):
     query: str   # incoming JSON { "query": "your question" }
 
+
 @app.post("/chat")
 async def chat(req: ChatRequest):
+    global embeddings, docsearch, llm
+
+    # Lazy load on first request
+    if embeddings is None or docsearch is None or llm is None:
+        embeddings = download_embeddings()
+
+        extracted_data = load_pdf_file("data/")
+        filtered_data = filter_minimal_docs(extracted_data)
+        text_chunks = text_split(filtered_data)
+
+        docsearch = build_or_load_faiss_index(text_chunks, embeddings)
+
+        llm = ChatGroq(
+            model="llama-3.1-8b-instant",
+            api_key=os.getenv("GROQ_API_KEY")
+        )
+
     # Retrieve context from FAISS
     results = docsearch.similarity_search(req.query, k=3)
     context = " ".join([doc.page_content for doc in results])
