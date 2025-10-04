@@ -52,8 +52,3 @@ async def chat(req: ChatRequest):
     # Answer with Groq LLM
     response = llm.invoke(f"Context: {context}\n\nQuestion: {req.query}")
     return {"answer": response.content}
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000)) 
-
-
