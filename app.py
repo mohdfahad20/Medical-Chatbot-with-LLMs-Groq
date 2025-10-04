@@ -76,12 +76,14 @@ async def initialize_models():
         print("✅ LLM ready")
         
         initialization_done = True
+        is_initializing = False  # CRITICAL: Set to False when done!
         print("🎉 All systems ready!")
     except Exception as e:
         print(f"❌ Initialization error: {e}")
         import traceback
         traceback.print_exc()
         is_initializing = False
+        initialization_done = False
         raise
 
 
