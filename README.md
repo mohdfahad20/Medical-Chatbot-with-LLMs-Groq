@@ -10,63 +10,71 @@ pinned: false
 license: mit
 ---
 
-# 🏥 Medical Chatbot Using LLM
+# Medical Chatbot Using LLM
 
-An AI-powered medical assistant that answers questions based on medical documents using semantic search and large language models.
+An AI-powered medical assistant that provides information from medical documents using RAG (Retrieval Augmented Generation), semantic search, and large language models.
 
-[![Hugging Face Spaces](https://img.shields.io/badge/🤗%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/VeNoM21/medical-chatbot)
+[![Hugging Face Space](https://img.shields.io/badge/🤗%20Hugging%20Face-Space-blue)](https://huggingface.co/spaces/VeNoM21/medical-chatbot)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
 ## ✨ Features
 
-- 📚 **Semantic Search**: Uses FAISS vector database for intelligent document retrieval
-- 🤖 **LLM-Powered**: Leverages Groq's Llama 3.1 for natural language responses
-- 💬 **Chat Interface**: Clean, intuitive Streamlit chat UI
-- ⚡ **Fast Responses**: Pre-built embeddings for quick initialization
-- 🔒 **Safe & Responsible**: Built-in medical disclaimers
+- 🔍 **Semantic Search** - FAISS vector database for intelligent document retrieval
+- 🤖 **Powered by Groq** - Fast LLM inference using Llama 3.1-8b-instant
+- 💬 **Interactive Chat** - Clean Streamlit interface with conversation memory
+- 🛡️ **Rate Limiting** - Fair usage protection (10 requests per 3 hours)
+- 📚 **Source Citations** - Toggle to view document sources for responses
+- ⚡ **Fast Initialization** - Pre-built embeddings for quick startup
+- 🔒 **Safety First** - Built-in medical disclaimers and responsible AI practices
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Streamlit
-- **LLM**: Groq (Llama 3.1-8b-instant)
-- **Embeddings**: sentence-transformers/all-MiniLM-L6-v2
-- **Vector Store**: FAISS
-- **Document Processing**: LangChain, PyPDF
-- **Hosting**: Hugging Face Spaces
+| Component | Technology |
+|-----------|-----------|
+| **Framework** | Streamlit |
+| **LLM Provider** | Groq (Llama 3.1-8b-instant) |
+| **Embeddings** | sentence-transformers/all-MiniLM-L6-v2 |
+| **Vector Store** | FAISS (Facebook AI Similarity Search) |
+| **Rate Limiting** | SQLite |
+| **Document Processing** | LangChain, PyPDF |
+| **Hosting** | Hugging Face Spaces |
 
 ---
 
 ## 🚀 Quick Start
 
-### Option 1: Use Online (Recommended)
+### Option 1: Use Online
 
-Visit the live demo: [Hugging Face Space](https://huggingface.co/spaces/VeNoM21/medical-chatbot)
+Visit the live demo: **[https://huggingface.co/spaces/VeNoM21/Medical-Chatbot-Using-LLM](https://huggingface.co/spaces/VeNoM21/Medical-Chatbot-Using-LLM)**
 
 ### Option 2: Run Locally
 
 ```bash
 # Clone the repository
-git clone https://huggingface.co/spaces/VeNoM21/medical-chatbot
+git clone https://github.com/YOUR_GITHUB_USERNAME/medical-chatbot.git
 cd medical-chatbot
 
 # Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Create .env file with your Groq API key
-echo "GROQ_API_KEY=your_key_here" > .env
+# Create .env file with your API key
+echo "GROQ_API_KEY=your_groq_api_key_here" > .env
 
-# Run the app
+# Run the application
 streamlit run app.py
 ```
 
-Open http://localhost:8501 in your browser.
+Visit `http://localhost:8501` in your browser.
+
+**Get Groq API Key:** [console.groq.com](https://console.groq.com)
 
 ---
 
@@ -75,18 +83,33 @@ Open http://localhost:8501 in your browser.
 ```
 medical-chatbot/
 ├── app.py                  # Main Streamlit application
-├── requirements.txt        # Python dependencies
-├── README.md              # This file
+├── config.py              # Configuration settings
+├── rate_limiter.py        # Rate limiting logic (SQLite)
+├── requirements.txt       # Python dependencies
+├── LICENSE               # MIT License
+├── README.md            # Documentation
+├── .env                 # Environment variables (not in repo)
+├── .gitignore          # Git ignore rules
+│
 ├── .streamlit/
-│   └── config.toml        # Streamlit theme configuration
+│   └── config.toml     # Streamlit theme configuration
+│
 ├── src/
-│   ├── prompt.py          # Custom system prompt
-│   └── helper.py          # Utility functions
-├── faiss_index/           # Pre-built FAISS vector index
-│   ├── index.faiss
-│   └── index.pkl
-└── data/                  # Medical PDF documents
-    └── *.pdf
+│   ├── prompt.py       # Custom system prompt template
+│   └── helper.py       # Utility functions (PDF loading, text splitting)
+│
+├── faiss_index/        # Pre-built FAISS vector index
+│   ├── index.faiss     # Vector embeddings
+│   └── index.pkl       # Metadata
+│
+├── data/              # Medical PDF documents
+│   └── Medical_book.pdf
+│
+└── archive/           # Archived old files (not deployed)
+    ├── app_fastapi_backup.py
+    ├── requirements_fastapi.txt
+    ├── static/
+    └── templates/
 ```
 
 ---
@@ -95,68 +118,150 @@ medical-chatbot/
 
 ### Environment Variables
 
-Required for local development:
-- `GROQ_API_KEY`: Your Groq API key ([Get one here](https://console.groq.com))
+**Required:**
+- `GROQ_API_KEY` - Your Groq API key for LLM access
 
-For Hugging Face Spaces, add this in **Settings → Variables and secrets**
+**For Hugging Face Spaces:**
+Add secrets in: `Settings → Variables and secrets → New secret`
+
+### Key Settings (config.py)
+
+```python
+# Model Configuration
+EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+LLM_MODEL = "llama-3.1-8b-instant"
+
+# Rate Limiting
+RATE_LIMIT_MAX_REQUESTS = 10
+RATE_LIMIT_WINDOW_HOURS = 3
+
+# Query Settings
+MAX_QUERY_LENGTH = 500
+MIN_QUERY_LENGTH = 3
+SIMILARITY_TOP_K = 5
+```
 
 ---
 
 ## 📖 How It Works
 
-1. **Document Loading**: Medical PDF is processed and split into chunks
-2. **Embedding**: Text chunks are converted to vector embeddings
-3. **Indexing**: Embeddings are stored in FAISS for fast similarity search
-4. **Query Processing**: User questions are embedded and matched against the index
-5. **Response Generation**: Relevant context + query sent to Groq LLM
-6. **Answer Display**: LLM response shown in chat interface
+```
+User Query
+    ↓
+1. Validate Input (length, rate limit check)
+    ↓
+2. Generate Query Embedding (sentence-transformers)
+    ↓
+3. Search FAISS Index (similarity search, top 5 results)
+    ↓
+4. Build Context (relevant chunks + conversation history)
+    ↓
+5. Send to Groq LLM (Llama 3.1 + system prompt)
+    ↓
+6. Stream Response (word-by-word display)
+    ↓
+7. Display Answer (with optional source citations)
+```
 
 ---
 
-## ⚠️ Medical Disclaimer
+## ⚠️ Important Disclaimers
 
-**IMPORTANT**: This chatbot is for **informational and educational purposes only**. It is NOT a substitute for professional medical advice, diagnosis, or treatment.
+### Medical Disclaimer
 
-- Always consult a qualified healthcare professional for medical concerns
-- Do not use this tool for medical emergencies
-- The information provided may not be accurate or up-to-date
-- This is an AI system and can make mistakes
+**THIS CHATBOT IS FOR INFORMATIONAL AND EDUCATIONAL PURPOSES ONLY.**
+
+- ❌ NOT a substitute for professional medical advice, diagnosis, or treatment
+- ❌ NOT for medical emergencies - call emergency services immediately
+- ✅ Always consult qualified healthcare professionals for medical concerns
+- ⚠️ Information may not be accurate, complete, or up-to-date
+- 🤖 This is an AI system and can make mistakes
+
+### Usage Limitations
+
+- **Rate Limit:** 10 requests per 3 hours per user session
+- **Best For:** General medical information and education
+- **Not For:** Diagnosis, treatment recommendations, emergency situations
+
+---
+
+## 🔐 Privacy & Data
+
+- ✅ No user data is permanently stored
+- ✅ Queries are logged temporarily for rate limiting only
+- ✅ Rate limit data resets every 3 hours
+- ✅ SQLite database is session-based (not persistent across deployments)
+- 📝 **Future Enhancement:** MongoDB integration for persistent rate limiting
+
+---
+
+## 🚧 Known Limitations
+
+1. **Session-Based Rate Limiting** - Resets on page refresh (SQLite limitation)
+2. **Response Length** - Very long queries may get truncated due to token limits
+3. **Single PDF Source** - Currently processes one medical document
+4. **No User Authentication** - Anyone can access (free tier constraint)
+
+---
+
+## 🎯 Future Enhancements
+
+- [ ] MongoDB integration for persistent rate limiting across sessions
+- [ ] Multiple PDF document support
+- [ ] User authentication system
+- [ ] Conversation export (download chat history)
 
 ---
 
 ## 🤝 Contributing
 
-This is a demo project. For improvements or issues:
+Contributions are welcome! To contribute:
 
 1. Fork the repository
-2. Create a feature branch
-3. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
 ## 📝 License
 
-MIT License - See LICENSE file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Developer
 
-Built with ❤️ for educational purposes
+**Built by:** [Mohd Fahad]  
+**GitHub:** [@YOUR_GITHUB_USERNAME](https://github.com/YOUR_GITHUB_USERNAME)  
+**Purpose:** Educational project demonstrating RAG with LLMs
 
 ---
 
 ## 🙏 Acknowledgments
 
-- [LangChain](https://langchain.com) for the RAG framework
-- [Groq](https://groq.com) for fast LLM inference
-- [Hugging Face](https://huggingface.co) for hosting
-- [Streamlit](https://streamlit.io) for the UI framework
+- [LangChain](https://langchain.com) - RAG framework and document processing
+- [Groq](https://groq.com) - Ultra-fast LLM inference
+- [Hugging Face](https://huggingface.co) - Free hosting and ML infrastructure
+- [Streamlit](https://streamlit.io) - Rapid web app development
+- [FAISS](https://github.com/facebookresearch/faiss) - Efficient similarity search
 
 ---
 
-## 📊 Stats
+## 📞 Support
 
-![Space Views](https://huggingface.co/spaces/YOUR_USERNAME/medical-chatbot/badge.svg)
+- **Issues:** [GitHub Issues](https://github.com/mohdfahad20/Medical-Chatbot-with-LLMs-Groq/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/YOUR_GITHUB_USERNAME/medical-chatbot/discussions)
+- **HF Space:** [VeNoM21/medical-chatbot](https://huggingface.co/spaces/VeNoM21/Medical-Chatbot-Using-LLM)
 
-Last Updated: 2025-10-05
+---
+
+## 📊 Project Stats
+
+**Last Updated:** October 2025  
+**Status:** Active Development
+
+---
+
+**⭐ If you find this project useful, please consider giving it a star on GitHub!**
