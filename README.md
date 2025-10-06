@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!--
 ---
 title: Medical Chatbot Using LLM 
@@ -266,3 +267,17 @@ This project is licensed under the **Apache License 2.0** — see the [LICENSE](
 ---
 
 **⭐ If you find this project useful, please consider giving it a star on GitHub!**
+=======
+---
+title: Medical Chatbot Using LLM
+emoji: 👀
+colorFrom: gray
+colorTo: blue
+sdk: gradio
+sdk_version: 5.49.0
+app_file: app.py
+pinned: false
+---
+
+Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+>>>>>>> b585d6a863aa3a04fb385d04061cc3666959d5d2
