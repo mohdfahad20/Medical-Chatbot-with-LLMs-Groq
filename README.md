@@ -7,7 +7,7 @@ sdk: streamlit
 sdk_version: 1.40.0
 app_file: app.py
 pinned: false
-license: mit
+license: apache-2.0
 ---
 
 # Medical Chatbot Using LLM
@@ -15,7 +15,7 @@ license: mit
 An AI-powered medical assistant that provides information from medical documents using RAG (Retrieval Augmented Generation), semantic search, and large language models.
 
 [![Hugging Face Space](https://img.shields.io/badge/🤗%20Hugging%20Face-Space-blue)](https://huggingface.co/spaces/VeNoM21/medical-chatbot)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ---
 
@@ -49,14 +49,14 @@ An AI-powered medical assistant that provides information from medical documents
 
 ### Option 1: Use Online
 
-Visit the live demo: **[https://huggingface.co/spaces/VeNoM21/Medical-Chatbot-Using-LLM](https://huggingface.co/spaces/VeNoM21/Medical-Chatbot-Using-LLM)**
+Visit the live demo: **[HF Spaces](https://huggingface.co/spaces/VeNoM21/Medical-Chatbot-Using-LLM)**
 
 ### Option 2: Run Locally
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_GITHUB_USERNAME/medical-chatbot.git
-cd medical-chatbot
+git clone https://github.com/mohdfahad20/Medical-Chatbot-with-LLMs-Groq.git
+cd Medical-Chatbot-with-LLMs-Groq
 
 # Create virtual environment
 python -m venv venv
@@ -227,14 +227,14 @@ Contributions are welcome! To contribute:
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **Apache License 2.0** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## 👨‍💻 Developer
 
-**Built by:** [Mohd Fahad]  
-**GitHub:** [@YOUR_GITHUB_USERNAME](https://github.com/YOUR_GITHUB_USERNAME)  
+**Built by:** Mohd Fahad
+**GitHub:** [mohdfahad20](https://github.com/mohdfahad20/)  
 **Purpose:** Educational project demonstrating RAG with LLMs
 
 ---
@@ -252,8 +252,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **Issues:** [GitHub Issues](https://github.com/mohdfahad20/Medical-Chatbot-with-LLMs-Groq/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/YOUR_GITHUB_USERNAME/medical-chatbot/discussions)
-- **HF Space:** [VeNoM21/medical-chatbot](https://huggingface.co/spaces/VeNoM21/Medical-Chatbot-Using-LLM)
+- **HF Space:** [VeNoM21/Medical-Chatbot-Using-LLM](https://huggingface.co/spaces/VeNoM21/Medical-Chatbot-Using-LLM)
 
 ---
 
