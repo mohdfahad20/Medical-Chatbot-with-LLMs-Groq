@@ -208,3 +208,7 @@ __marimo__/
 
 archive/
 .streamlit/secrets.toml
+research/
+rate_limits.db
+*.db
+.DS_Store
