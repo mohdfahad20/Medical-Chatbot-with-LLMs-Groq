@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  medical-chatbot:
+    # For initial development: Build locally
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    
+    # After pushing to Docker Hub, comment above and use this:
+    image: mohdfahad21/medical-chatbot:latest
+    
+    container_name: medical-chatbot-app
+    
+    ports:
+      - "8501:8501"
+    
+    env_file:
+      - .env
+    
+    environment:
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+    
+    volumes:
+      # Mount for development (live code changes without rebuild)
+      # Comment this out in production
+      - .:/app
+      # Preserve cache directories
+      - /app/__pycache__
+      - ./.streamlit:/app/.streamlit
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
