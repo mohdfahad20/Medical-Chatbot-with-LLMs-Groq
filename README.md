@@ -57,7 +57,7 @@ Visit the live demo: **[Hugging Face Spaces](https://huggingface.co/spaces/VeNoM
 git clone https://github.com/mohdfahad20/Medical-Chatbot-with-LLMs-Groq.git
 cd Medical-Chatbot-with-LLMs-Groq
 
-# 2. Create .env file from template
+# 2. Create .env file
 cp .env
 
 # 3. Edit .env and add your Groq API key
@@ -210,7 +210,7 @@ medical-chatbot/
 
 **Setup Steps:**
 
-1. **Copy the example file:**
+1. **Create `.env` file:**
    ```bash
    cp .env.example .env
    ```
