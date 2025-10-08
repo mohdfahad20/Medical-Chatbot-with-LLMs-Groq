@@ -212,3 +212,6 @@ research/
 rate_limits.db
 *.db
 .DS_Store
+
+# Docker
+docker-compose.override.yml
